@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DERMADROP MED · Amortisationsrechner für Praxen</title>
+<meta name="description" content="Rechnen Sie in einer Minute, ab wann sich DERMADROP MED für Ihre Praxis trägt – bei Kauf oder Leasing.">
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:'Jost';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/jost-latin-300-normal.woff2) format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/jost-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/jost-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/jost-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/nunito-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/nunito-sans-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito Sans';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/nunito-sans-latin-700-normal.woff2) format('woff2')}
+:root {
+  /* Meddrop-Look: Silbergrau-Flächen, Stahlblau als Akzent, schmale geometrische Versalien wie in der DERMADROP-MED-Broschüre */
+  --bg: #eef0f4;
+  --surface: #ffffff;
+  --ink: #2b2f45;
+  --muted: #6b7189;
+  --line: #d8dbe4;
+  --accent: #56739a;
+  --accent-deep: #3f4766;
+  --accent-soft: #e6ebf3;
+  --good: #3f7d6a;
+  --good-soft: #e4f0ec;
+  --warn: #9a6a1c;
+  --warn-soft: #f7efe0;
+  --font-display: "Jost", "Avenir Next", "Century Gothic", sans-serif;
+  --font-body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171f; --surface: #1d2029; --ink: #e8eaf1; --muted: #9ba1b8; --line: #2e3240;
+    --accent: #8fa8cc; --accent-deep: #c3cde0; --accent-soft: #252c3b; --good: #7cc2a9; --good-soft: #1b2c27;
+    --warn: #e2b46a; --warn-soft: #33291a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171f; --surface: #1d2029; --ink: #e8eaf1; --muted: #9ba1b8; --line: #2e3240;
+  --accent: #8fa8cc; --accent-deep: #c3cde0; --accent-soft: #252c3b; --good: #7cc2a9; --good-soft: #1b2c27;
+  --warn: #e2b46a; --warn-soft: #33291a; color-scheme: dark;
+}
+.brand { display: flex; flex-direction: column; gap: 2px; }
+.brand b { font-family: var(--font-display); font-weight: 400; font-size: 20px; letter-spacing: 0.32em; color: var(--accent-deep); }
+.brand span { font-family: var(--font-display); font-size: 10px; letter-spacing: 0.28em; color: var(--muted); text-transform: uppercase; }
+.topbar { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.contact { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.45; }
+.contact strong { color: var(--ink); font-weight: 700; }
+@media (max-width: 600px) { .contact { text-align: left; } }
+.band { display: block; font-family: var(--font-display); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; padding: 5px 12px; background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 35%, rgba(86,115,154,0.15) 100%); border-radius: 2px; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 48px; display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 18px; }
+header h1 { font-family: var(--font-display); font-weight: 300; font-size: 30px; margin: 0; letter-spacing: 0.06em; text-transform: uppercase; text-wrap: balance; color: var(--ink); line-height: 1.15; }
+header p { margin: 6px 0 0; color: var(--muted); max-width: 68ch; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 22px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.card h2 { font-family: var(--font-display); font-size: 15px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-deep); margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.card h2 small { font-family: var(--font-body); font-weight: 500; font-size: 12px; color: var(--muted); }
+.inputs { display: flex; flex-direction: column; gap: 16px; }
+.row { display: grid; grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)); gap: 10px; align-items: end; }
+.row.head { font-size: 12px; color: var(--muted); font-weight: 600; align-items: end; }
+.row .name { font-weight: 600; font-size: 14px; padding-bottom: 8px; }
+.row .name span { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+@media (max-width: 480px) { .row { grid-template-columns: repeat(3, minmax(0,1fr)); } .row .name, .row.head .h0 { grid-column: 1 / -1; padding-bottom: 0; } }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+input[type="number"] { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-variant-numeric: tabular-nums; }
+input[type="number"]:focus-visible, button:focus-visible, input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toggle { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.toggle input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); }
+.toggle span small { display: block; color: var(--muted); font-size: 12px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 13px; font-weight: 600; border: 0; background: transparent; color: var(--muted); padding: 7px 14px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.note { font-size: 12px; color: var(--muted); margin: 0; }
+.tag { font-size: 11px; font-weight: 600; background: var(--warn-soft); color: var(--warn); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.results { position: sticky; top: 16px; }
+.verdict { border-radius: 10px; padding: 14px 16px; background: var(--good-soft); color: var(--ink); border-left: 4px solid var(--good); }
+.verdict.warn { background: var(--warn-soft); border-left-color: var(--warn); }
+.verdict strong { font-family: var(--font-display); font-weight: 500; font-size: 20px; display: block; line-height: 1.25; text-wrap: balance; }
+.verdict p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+.kpi .l { font-size: 12px; color: var(--muted); font-weight: 600; }
+.kpi .v { font-family: var(--font-display); font-weight: 500; color: var(--accent-deep); font-size: 22px; font-variant-numeric: tabular-nums; }
+.kpi .s { font-size: 12px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; }
+.chartbox svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+@media (max-width: 480px) { header h1 { font-size: 22px; letter-spacing: 0.03em; overflow-wrap: anywhere; } }
+.cta-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.btn { font: inherit; font-size: 14px; font-weight: 700; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 10px 16px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.contactgrid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 22px; align-items: start; }
+@media (max-width: 860px) { .contactgrid { grid-template-columns: 1fr; } }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.form .full { grid-column: 1 / -1; }
+@media (max-width: 520px) { .form { grid-template-columns: 1fr; } }
+.form input[type="text"], .form input[type="email"], .form input[type="tel"], .form select, .form textarea { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+.form textarea { min-height: 80px; resize: vertical; }
+.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.err { color: #9b3d3d; font-size: 13px; font-weight: 600; margin: 0; }
+footer { font-size: 12px; color: var(--muted); max-width: 80ch; }
+@media (prefers-reduced-motion: no-preference) { .kpi .v, .verdict strong { transition: color .2s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="topbar">
+      <div class="brand"><b>DERMADROP MED</b><span>Medical-Grade Skin Solutions</span></div>
+      <div class="contact"><strong>Gabriele Thoma</strong> · Vertriebspartnerin DERMADROP MED<br>Jean-Vogel-Straße 4, 44625 Herne<br>Tel. 0170 8367817 · gabriele.thoma@meddrop.com</div>
+    </div>
+    <span class="band">Wirtschaft &amp; ROI für Ihre Praxis</span>
+    <h1>Amortisationsrechner</h1>
+    <p>Behandlungen pro Woche eintragen und sehen, wann sich DERMADROP MED für Ihre Praxis bezahlt macht – bei Kauf oder Leasing. Alle Werte sind anpassbar.</p>
+    <div class="cta-row" style="margin-top:0">
+      <a class="btn" href="https://calendly.com/gabriele-thoma-meddrop" target="_blank" rel="noopener" data-cal>Demo-Termin buchen</a>
+      <a class="btn ghost" href="#kontakt">Rückruf anfordern</a>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="inputs" aria-label="Eingaben">
+      <div class="card">
+        <h2>Behandlungen <small>pro Woche · Preis · Kartusche</small></h2>
+        <div class="row head"><span class="h0">Behandlung</span><span>pro Woche</span><span>Preis Patient (€)</span><span>Kartusche (€)</span></div>
+        <div class="row">
+          <div class="name">Komplettes Facial<span>Standard-TDA</span></div>
+          <input type="number" id="n1" min="0" step="1" value="4" aria-label="Facials pro Woche">
+          <input type="number" id="p1" min="0" step="5" value="200" aria-label="Preis Facial">
+          <input type="number" id="c1" min="0" step="1" value="25" aria-label="Kartuschenkosten Facial">
+        </div>
+        <div class="row">
+          <div class="name">Facial mit Polynukleotiden<span>Premium</span></div>
+          <input type="number" id="n2" min="0" step="1" value="2" aria-label="PN-Behandlungen pro Woche">
+          <input type="number" id="p2" min="0" step="5" value="325" aria-label="Preis PN">
+          <input type="number" id="c2" min="0" step="1" value="60" aria-label="Kartuschenkosten PN">
+        </div>
+        <div class="row">
+          <div class="name">Einzelbereich / Körper<span>z. B. Hals, Dekolleté, Narben <span class="tag">Beispielwerte</span></span></div>
+          <input type="number" id="n3" min="0" step="1" value="2" aria-label="Einzelbereiche pro Woche">
+          <input type="number" id="p3" min="0" step="5" value="120" aria-label="Preis Einzelbereich">
+          <input type="number" id="c3" min="0" step="1" value="12" aria-label="Kartuschenkosten Einzelbereich">
+        </div>
+        <div class="pair">
+          <label class="f" for="weeks">Arbeitswochen pro Jahr<input type="number" id="weeks" min="1" max="52" step="1" value="46"></label>
+          <label class="f" for="staff">Personalkosten je Behandlung (€)<input type="number" id="staff" min="0" step="1" value="0"></label>
+        </div>
+        <p class="note">Delegierbar: Behandlungsdauer 20–30 Min., durchgeführt von geschultem Personal unter ärztlicher Aufsicht. Für die Assistenzzeit hier einen Betrag eintragen.</p>
+        <label class="toggle"><input type="checkbox" id="vat" checked>
+          <span>Patientenpreise enthalten 19 % USt
+            <small>Rein ästhetische Behandlungen sind in der Regel umsatzsteuerpflichtig – die Praxis behält dann den Nettobetrag. Mit Steuerberater klären.</small></span></label>
+      </div>
+
+      <div class="card">
+        <h2>Finanzierung
+          <span class="seg" role="group" aria-label="Kauf oder Leasing">
+            <button type="button" id="mBuy" aria-pressed="true">Kauf</button>
+            <button type="button" id="mLease" aria-pressed="false">Leasing</button>
+          </span>
+        </h2>
+        <div class="pair">
+          <label class="f" for="price">Gerätepreis netto (€)<input type="number" id="price" min="0" step="100" value="34860"></label>
+          <label class="f" for="term">Laufzeit Leasing (Monate)<input type="number" id="term" min="12" max="96" step="6" value="48"></label>
+          <label class="f" for="rate">Zins p. a. (%) <input type="number" id="rate" min="0" max="20" step="0.5" value="6"></label>
+          <label class="f" for="lrate">Monatsrate (€, berechnet oder eigene)<input type="number" id="lrate" min="0" step="10"></label>
+        </div>
+        <p class="note">Zins und Rate sind Annahmen <span class="tag">bitte echte Leasing-Konditionen eintragen</span>. Eine eigene Monatsrate überschreibt die Berechnung.</p>
+      </div>
+    </section>
+
+    <section class="card results" aria-live="polite" aria-label="Ergebnis">
+      <div class="verdict" id="verdict"><strong id="vHead">–</strong><p id="vSub"></p></div>
+      <div class="kpis">
+        <div class="kpi"><span class="l">Deckungsbeitrag pro Monat</span><span class="v" id="kMonth">–</span><span class="s" id="kMonthS"></span></div>
+        <div class="kpi"><span class="l">Ø Deckungsbeitrag pro Behandlung</span><span class="v" id="kPer">–</span><span class="s" id="kPerS"></span></div>
+        <div class="kpi"><span class="l" id="kBEl">Behandlungen bis Amortisation</span><span class="v" id="kBE">–</span><span class="s" id="kBES"></span></div>
+        <div class="kpi"><span class="l">Ergebnis nach 5 Jahren</span><span class="v" id="k5">–</span><span class="s">nach Abzug Gerät bzw. Raten</span></div>
+      </div>
+      <div class="chartbox">
+        <div class="legend"><span><i style="background:var(--accent)"></i>Kumuliertes Ergebnis der Praxis</span><span><i style="background:var(--muted)"></i>Nulllinie</span></div>
+        <svg id="chart" viewBox="0 0 520 220" role="img" aria-label="Kumuliertes Ergebnis über 60 Monate"></svg>
+      </div>
+      <table aria-label="Aufschlüsselung pro Behandlungsart">
+        <thead><tr><th>Behandlung</th><th>netto/Beh.</th><th>DB/Beh.</th><th>pro Monat</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <section class="card" id="kontakt" aria-label="Kontakt">
+    <h2>Sie möchten DERMADROP MED sehen? <small>Demo in Ihrer Praxis, 30 Minuten</small></h2>
+    <div class="contactgrid">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <p style="margin:0"><strong>Termin direkt buchen.</strong> Wählen Sie im Kalender einen Termin für eine Demo in Ihrer Praxis oder ein kurzes Telefonat. Gabriele Thoma bringt Gerät und Kartuschen mit – Ihr Team kann direkt mitbehandeln.</p>
+        <div><a class="btn" href="https://calendly.com/gabriele-thoma-meddrop" target="_blank" rel="noopener" data-cal>Termin im Kalender wählen</a></div>
+        <p class="note">Tipp: Wenn Sie rechts Name und E-Mail eintragen, sind diese im Kalender schon ausgefüllt.</p>
+        <div class="contact" style="text-align:left;font-size:14px"><strong>Gabriele Thoma</strong> · Vertriebspartnerin DERMADROP MED<br>Tel. <a href="tel:+491708367817">0170 8367817</a> · <a href="mailto:gabriele.thoma@meddrop.com">gabriele.thoma@meddrop.com</a></div>
+      </div>
+      <form class="form" id="leadForm" novalidate>
+        <label class="f">Name, Titel<input type="text" id="lName" autocomplete="name" placeholder="Dr. med. …"></label>
+        <label class="f">Praxis<input type="text" id="lPraxis" autocomplete="organization"></label>
+        <label class="f">Ort<input type="text" id="lOrt" autocomplete="address-level2"></label>
+        <label class="f">Telefon<input type="tel" id="lTel" autocomplete="tel"></label>
+        <label class="f full">E-Mail<input type="email" id="lMail" autocomplete="email"></label>
+        <label class="f full">Ich wünsche mir
+          <select id="lWish"><option>eine Demo in meiner Praxis</option><option>einen Rückruf</option><option>ein Angebot (Kauf oder Leasing)</option><option>Unterlagen und Studien</option></select></label>
+        <label class="f full">Nachricht (optional)<textarea id="lMsg" placeholder="z. B. beste Zeit für einen Rückruf, vorhandene Geräte …"></textarea></label>
+        <label class="toggle full"><input type="checkbox" id="lCalc" checked><span>Meine Rechnung von oben mitschicken<small>Behandlungen, Preise und Ergebnis – so kann Gabriele Thoma gezielt vorbereiten.</small></span></label>
+        <p class="err full" id="lErr" role="alert" hidden>Bitte Name und Telefon oder E-Mail angeben.</p>
+        <div class="cta-row full" style="margin-top:0">
+          <button type="button" class="btn" id="lMailBtn">Per E-Mail senden</button>
+          <button type="button" class="btn ghost" id="lWaBtn">Per WhatsApp senden</button>
+        </div>
+        <p class="note full">Die Nachricht geht direkt aus Ihrem E-Mail-Programm bzw. WhatsApp an Gabriele Thoma. Diese Seite speichert Ihre Angaben nicht; sie werden nur zur Beantwortung Ihrer Anfrage genutzt.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer>Deckungsbeitrag = Nettoerlös minus Kartusche minus eingetragene Personalkosten. Nicht enthalten: Raumkosten, Marketing, Wartung, Steuereffekte (Abschreibung, Vorsteuer). Erste Patientenpreise und Kartuschenkosten laut Meddrop-Vertrieb; Einzelbereich-Werte sind Beispiele. Keine Steuer- oder Finanzberatung.<br><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></footer>
+</div>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const eur = v => (v < 0 ? "−" : "") + Math.abs(Math.round(v)).toLocaleString("de-DE") + " €";
+  const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+  let mode = "buy";
+  let lrateManual = false;
+
+  function annuity(P, ratePa, n) {
+    const r = ratePa / 100 / 12;
+    if (n <= 0) return 0;
+    if (r === 0) return P / n;
+    return P * r / (1 - Math.pow(1 + r, -n));
+  }
+
+  function calc() {
+    const vat = $("vat").checked ? 1.19 : 1;
+    const weeks = Math.min(52, Math.max(1, num("weeks")));
+    const staff = num("staff");
+    const types = [
+      ["Facial", num("n1"), num("p1"), num("c1")],
+      ["Facial + PN", num("n2"), num("p2"), num("c2")],
+      ["Einzelbereich", num("n3"), num("p3"), num("c3")]
+    ];
+    const perMonthFactor = weeks / 12;
+    let monthDB = 0, monthCount = 0, rows = "";
+    types.forEach(([name, n, p, c]) => {
+      const net = p / vat;
+      const db = net - c - staff;
+      const m = db * n * perMonthFactor;
+      monthDB += m; monthCount += n * perMonthFactor;
+      rows += `<tr><td>${name}</td><td>${eur(net)}</td><td>${eur(db)}</td><td>${eur(m)}</td></tr>`;
+    });
+    $("tbody").innerHTML = rows;
+    const avg = monthCount > 0 ? monthDB / monthCount : 0;
+
+    const price = num("price"), term = Math.max(1, num("term"));
+    const calcRate = annuity(price, num("rate"), term);
+    if (!lrateManual) $("lrate").value = Math.round(calcRate);
+    const lrate = num("lrate");
+
+    $("kMonth").textContent = eur(monthDB);
+    $("kMonthS").textContent = `bei ca. ${Math.round(monthCount)} Behandlungen im Monat`;
+    $("kPer").textContent = eur(avg);
+    $("kPerS").textContent = vat > 1 ? "nach USt, Kartusche, Personal" : "nach Kartusche, Personal";
+
+    const series = [];
+    let cum = mode === "buy" ? -price : 0;
+    series.push(cum);
+    for (let m = 1; m <= 60; m++) {
+      cum += monthDB;
+      if (mode === "lease" && m <= term) cum -= lrate;
+      series.push(cum);
+    }
+    $("k5").textContent = eur(series[60]);
+
+    const vd = $("verdict");
+    if (mode === "buy") {
+      const be = avg > 0 ? Math.ceil(price / avg) : Infinity;
+      const months = monthDB > 0 ? price / monthDB : Infinity;
+      $("kBEl").textContent = "Behandlungen bis Amortisation";
+      $("kBE").textContent = isFinite(be) ? be.toLocaleString("de-DE") : "–";
+      $("kBES").textContent = "beim aktuellen Behandlungsmix";
+      if (isFinite(months) && months <= 60) {
+        vd.className = "verdict";
+        $("vHead").textContent = `Das Gerät hat sich nach ca. ${Math.ceil(months)} Monaten bezahlt gemacht.`;
+        $("vSub").textContent = `Danach bleiben rund ${eur(monthDB)} Deckungsbeitrag pro Monat.`;
+      } else {
+        vd.className = "verdict warn";
+        $("vHead").textContent = monthDB > 0 ? `Amortisation erst nach ca. ${Math.ceil(months)} Monaten.` : "Mit diesem Mix entsteht kein Deckungsbeitrag.";
+        $("vSub").textContent = "Mehr Behandlungen pro Woche oder Premium-Anteil (Polynukleotide) erhöhen.";
+      }
+    } else {
+      const need = avg > 0 ? Math.ceil(lrate / avg) : Infinity;
+      const perWeek = isFinite(need) ? need / perMonthFactor : Infinity;
+      const surplus = monthDB - lrate;
+      $("kBEl").textContent = "Behandlungen/Monat für die Rate";
+      $("kBE").textContent = isFinite(need) ? need.toLocaleString("de-DE") : "–";
+      $("kBES").textContent = isFinite(perWeek) ? `≈ ${perWeek.toLocaleString("de-DE", {maximumFractionDigits: 1})} pro Woche · Rate ${eur(lrate)}` : "";
+      if (surplus >= 0) {
+        vd.className = "verdict";
+        $("vHead").textContent = `Die Leasingrate ist mit ${need} Behandlungen im Monat gedeckt.`;
+        $("vSub").textContent = `Beim aktuellen Mix bleiben ab dem ersten Monat ca. ${eur(surplus)} pro Monat übrig.`;
+      } else {
+        vd.className = "verdict warn";
+        $("vHead").textContent = `Für die Rate fehlen ca. ${eur(-surplus)} pro Monat.`;
+        $("vSub").textContent = `Nötig sind ${isFinite(need) ? need : "–"} Behandlungen im Monat statt ${Math.round(monthCount)}.`;
+      }
+    }
+    draw(series);
+  }
+
+  function draw(s) {
+    const W = 520, H = 220, L = 58, R = 12, T = 12, B = 28;
+    let min = Math.min(0, ...s), max = Math.max(0, ...s);
+    if (max === min) max = min + 1;
+    const step = niceStep((max - min) / 4);
+    min = Math.floor(min / step) * step; max = Math.ceil(max / step) * step;
+    const x = i => L + (W - L - R) * i / 60;
+    const y = v => T + (H - T - B) * (max - v) / (max - min);
+    let g = "";
+    for (let v = min; v <= max + 1e-6; v += step) {
+      g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/>`;
+      g += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${(v / 1000).toLocaleString("de-DE")}k</text>`;
+    }
+    for (let m = 0; m <= 60; m += 12) {
+      g += `<text x="${x(m)}" y="${H - 8}" text-anchor="middle" font-size="10" fill="var(--muted)">${m === 0 ? "Start" : (m / 12) + " J."}</text>`;
+    }
+    g += `<line x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1.2"/>`;
+    const pts = s.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const area = `${x(0)},${y(0)} ${pts} ${x(60)},${y(0)}`;
+    g += `<polygon points="${area}" fill="var(--accent)" opacity="0.10"/>`;
+    g += `<polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>`;
+    const cross = s.findIndex((v, i) => i > 0 && v >= 0 && s[i - 1] < 0);
+    if (cross > 0) {
+      g += `<circle cx="${x(cross)}" cy="${y(s[cross])}" r="4.5" fill="var(--good)"/>`;
+      const tx = Math.min(x(cross) + 8, W - R - 70);
+      g += `<text x="${tx}" y="${y(s[cross]) - 8}" font-size="11" font-weight="600" fill="var(--good)">Monat ${cross}</text>`;
+    }
+    g += `<circle cx="${x(60)}" cy="${y(s[60])}" r="4" fill="var(--accent)"/>`;
+    $("chart").innerHTML = g;
+  }
+  function niceStep(raw) {
+    const p = Math.pow(10, Math.floor(Math.log10(Math.max(raw, 1))));
+    const f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+
+  document.querySelectorAll("input").forEach(el => el.addEventListener("input", () => {
+    if (el.id === "lrate") lrateManual = el.value !== "";
+    if (["price", "term", "rate"].includes(el.id)) lrateManual = false;
+    calc();
+  }));
+  function setMode(m) {
+    mode = m;
+    $("mBuy").setAttribute("aria-pressed", m === "buy");
+    $("mLease").setAttribute("aria-pressed", m === "lease");
+    calc();
+  }
+  $("mBuy").addEventListener("click", () => setMode("buy"));
+  $("mLease").addEventListener("click", () => setMode("lease"));
+  calc();
+})();
+</script>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const CAL = "https://calendly.com/gabriele-thoma-meddrop";
+  const v = id => ($(id).value || "").trim();
+  function calUrl() {
+    const q = new URLSearchParams();
+    if (v("lName")) q.set("name", v("lName"));
+    if (v("lMail")) q.set("email", v("lMail"));
+    const s = q.toString(); return s ? CAL + "?" + s : CAL;
+  }
+  function refreshCal() { document.querySelectorAll("[data-cal]").forEach(a => a.href = calUrl()); }
+  ["lName", "lMail"].forEach(id => $(id).addEventListener("input", refreshCal));
+  function txt(id) { const el = $(id); return el ? el.textContent.trim() : ""; }
+  function calcSummary() {
+    const lease = $("mLease").getAttribute("aria-pressed") === "true";
+    const lines = [
+      "Facials/Woche: " + v("n1") + " à " + v("p1") + " €",
+      "Polynukleotide/Woche: " + v("n2") + " à " + v("p2") + " €",
+      "Einzelbereiche/Woche: " + v("n3") + " à " + v("p3") + " €",
+      "Modell: " + (lease ? "Leasing " + v("term") + " Monate, " + v("rate") + " % p. a." : "Kauf"),
+      "Ergebnis: " + txt("vHead"),
+      "Deckungsbeitrag/Monat: " + txt("kMonth"),
+      txt("kBEl") + ": " + txt("kBE")
+    ];
+    return lines.join("\n");
+  }
+  function message() {
+    const parts = [
+      "Anfrage DERMADROP MED – " + v("lWish"),
+      "",
+      "Name: " + v("lName"),
+      "Praxis: " + v("lPraxis"),
+      "Ort: " + v("lOrt"),
+      "Telefon: " + v("lTel"),
+      "E-Mail: " + v("lMail")
+    ];
+    if (v("lMsg")) parts.push("", "Nachricht: " + v("lMsg"));
+    if ($("lCalc").checked) parts.push("", "Meine Rechnung (Amortisationsrechner):", calcSummary());
+    return parts.join("\n");
+  }
+  function valid() {
+    const ok = v("lName") && (v("lTel") || v("lMail"));
+    $("lErr").hidden = !!ok; return ok;
+  }
+  $("lMailBtn").addEventListener("click", () => {
+    if (!valid()) return;
+    const subj = "Anfrage DERMADROP MED – " + (v("lPraxis") || v("lName"));
+    const u = "mailto:gabriele.thoma@meddrop.com?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(message());
+    const w = window.open(u, "_blank"); if (!w) location.href = u;
+  });
+  $("lWaBtn").addEventListener("click", () => {
+    if (!valid()) return;
+    const u = "https://wa.me/491708367817?text=" + encodeURIComponent(message());
+    const w = window.open(u, "_blank"); if (!w) location.href = u;
+  });
+})();
+</script>
+</body>
+</html>
