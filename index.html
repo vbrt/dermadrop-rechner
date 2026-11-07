@@ -211,15 +211,15 @@ footer { font-size: 12px; color: var(--muted); max-width: 80ch; }
         <p class="note">Tipp: Wenn Sie rechts Name und E-Mail eintragen, sind diese im Kalender schon ausgefüllt.</p>
         <div class="contact" style="text-align:left;font-size:14px"><strong>Gabriele Thoma</strong> · Vertriebspartnerin DERMADROP MED<br>Tel. <a href="tel:+491708367817">0170 8367817</a> · <a href="mailto:gabriele.thoma@meddrop.com">gabriele.thoma@meddrop.com</a></div>
       </div>
-      <form class="form" id="leadForm" novalidate>
-        <label class="f">Name, Titel<input type="text" id="lName" autocomplete="name" placeholder="Dr. med. …"></label>
-        <label class="f">Praxis<input type="text" id="lPraxis" autocomplete="organization"></label>
-        <label class="f">Ort<input type="text" id="lOrt" autocomplete="address-level2"></label>
-        <label class="f">Telefon<input type="tel" id="lTel" autocomplete="tel"></label>
-        <label class="f full">E-Mail<input type="email" id="lMail" autocomplete="email"></label>
+      <form class="form" id="leadForm" novalidate autocomplete="off">
+        <label class="f">Name, Titel<input type="text" id="lName" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" placeholder="Dr. med. …"></label>
+        <label class="f">Praxis<input type="text" id="lPraxis" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
+        <label class="f">Ort<input type="text" id="lOrt" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
+        <label class="f">Telefon<input type="text" inputmode="tel" id="lTel" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
+        <label class="f full">E-Mail<input type="text" inputmode="email" id="lMail" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
         <label class="f full">Ich wünsche mir
           <select id="lWish"><option>eine Demo in meiner Praxis</option><option>einen Rückruf</option><option>ein Angebot (Kauf oder Leasing)</option><option>Unterlagen und Studien</option></select></label>
-        <label class="f full">Nachricht (optional)<textarea id="lMsg" placeholder="z. B. beste Zeit für einen Rückruf, vorhandene Geräte …"></textarea></label>
+        <label class="f full">Nachricht (optional)<textarea id="lMsg" autocomplete="off" placeholder="z. B. beste Zeit für einen Rückruf, vorhandene Geräte …"></textarea></label>
         <label class="toggle full"><input type="checkbox" id="lCalc" checked><span>Meine Rechnung von oben mitschicken<small>Behandlungen, Preise und Ergebnis – so kann Gabriele Thoma gezielt vorbereiten.</small></span></label>
         <p class="err full" id="lErr" role="alert" hidden>Bitte Name und Telefon oder E-Mail angeben.</p>
         <div class="cta-row full" style="margin-top:0">
